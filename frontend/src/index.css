@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Exact Brand Palette */
+    --color-laterite: #A9472B;
+    --color-terracotta: #C66B45;
+    --color-forest: #254D3B;
+    --color-deep-forest: #17352A;
+    --color-warm-beige: #E9DDC8;
+    --color-cream: #F8F5EF;
+    --color-off-white: #FCFBF8;
+    --color-charcoal: #242522;
+    --color-muted-gold: #B99A5A;
+    --color-soft-grey: #777873;
+
+    /* Theme Tokens mapped to exact warm editorial palette */
+    --background: 40 33% 96%; /* #F8F5EF Cream */
+    --foreground: 75 4% 14%;   /* #242522 Charcoal */
+
+    --card: 45 40% 98%;       /* #FCFBF8 Off-white */
+    --card-foreground: 75 4% 14%;
+
+    --popover: 45 40% 98%;
+    --popover-foreground: 75 4% 14%;
+
+    --primary: 13 59% 41%;    /* #A9472B Laterite Red */
+    --primary-foreground: 45 40% 98%;
+
+    --secondary: 153 34% 23%; /* #254D3B Forest Green */
+    --secondary-foreground: 45 40% 98%;
+
+    --muted: 39 36% 85%;      /* #E9DDC8 Warm Beige */
+    --muted-foreground: 70 2% 46%; /* #777873 Soft Grey */
+
+    --accent: 40 39% 54%;     /* #B99A5A Muted Gold */
+    --accent-foreground: 75 4% 14%;
+
+    --destructive: 13 59% 41%;
+    --destructive-foreground: 45 40% 98%;
+
+    --border: 39 26% 86%;     /* Subtle beige border */
+    --input: 39 26% 86%;
+    --ring: 13 59% 41%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 160 24% 15%; /* Deep forest night #17352A */
+    --foreground: 40 33% 96%;  /* Cream #F8F5EF */
+
+    --card: 154 28% 18%;       /* Muted dark forest */
+    --card-foreground: 40 33% 96%;
+
+    --popover: 154 28% 18%;
+    --popover-foreground: 40 33% 96%;
+
+    --primary: 18 51% 52%;     /* Warm Terracotta in dark mode #C66B45 */
+    --primary-foreground: 40 33% 96%;
+
+    --secondary: 40 39% 54%;   /* Muted gold */
+    --secondary-foreground: 75 4% 14%;
+
+    --muted: 155 20% 22%;
+    --muted-foreground: 40 18% 70%;
+
+    --accent: 40 39% 54%;
+    --accent-foreground: 40 33% 96%;
+
+    --destructive: 13 59% 41%;
+    --destructive-foreground: 40 33% 96%;
+
+    --border: 155 20% 24%;
+    --input: 155 20% 24%;
+    --ring: 18 51% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+
+  /* Editorial Fluid Typography Headings */
+  h1, .font-editorial {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+
+  h2, h3, h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Editorial subtle borders and quiet luxury surfaces */
+.editorial-card {
+  background-color: var(--color-off-white);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .editorial-card {
+  background-color: hsl(var(--card));
+}
+
+/* Subtle image zoom */
+.editorial-img-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
+.editorial-img-wrap img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-img-wrap:hover img {
+  transform: scale(1.04);
+}
+
+/* Custom Scrollbar in warm neutral tones */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: #A9472B44;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A9472B88;
+}
+
+/* Native smooth scrolling & navbar offset */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+section[id], div[id] {
+  scroll-margin-top: 100px;
+}
+
