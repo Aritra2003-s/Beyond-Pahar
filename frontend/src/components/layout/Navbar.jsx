@@ -127,16 +127,33 @@ export function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [setSearchDialogOpen]);
 
-  // Click outside to close dropdowns
+  // Click / touch outside to close dropdowns & mobile menu
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handlePointerOutside = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
         setActiveDropdown(null);
+        setMobileMenuOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handlePointerOutside);
+    document.addEventListener('touchstart', handlePointerOutside, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handlePointerOutside);
+      document.removeEventListener('touchstart', handlePointerOutside);
+    };
   }, []);
+
+  // Lock body scroll when mobile menu is open to prevent background scrolling
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   // Close menus on route change
   useEffect(() => {
@@ -162,14 +179,15 @@ export function Navbar() {
   };
 
   const isScrolledOrSubpage = isScrolled || !isHome;
+  const isHeaderSolid = isScrolledOrSubpage || mobileMenuOpen;
 
   return (
     <header
       ref={navRef}
       style={{ zIndex: 1000 }}
       className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
-        isScrolledOrSubpage
-          ? 'bg-[#FAF8F5]/95 dark:bg-stone-950/95 backdrop-blur-md border-b border-[#E8E2D9] dark:border-stone-800 shadow-sm shadow-stone-900/5 py-3'
+        isHeaderSolid
+          ? 'bg-[#FAF8F5]/98 dark:bg-stone-950/98 backdrop-blur-md border-b border-[#E8E2D9] dark:border-stone-800 shadow-sm shadow-stone-900/5 py-3'
           : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-white/10 py-4 sm:py-5'
       }`}
     >
@@ -179,21 +197,21 @@ export function Navbar() {
           <a
             href={isHome ? '#home' : '/#home'}
             onClick={(e) => handleNavClick(e, 'home')}
-            className="flex items-center gap-3 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BA532B] rounded-xl select-none"
+            className="flex items-center gap-2.5 sm:gap-3 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BA532B] rounded-xl select-none"
             aria-label="BeyondPahar Home"
           >
-            <BrandLogo size={42} className="group-hover:scale-105 transition-transform duration-300" />
+            <BrandLogo size={38} className="sm:w-[42px] sm:h-[42px] group-hover:scale-105 transition-transform duration-300" />
             <div className="flex flex-col">
               <span
-                className={`font-serif text-2xl sm:text-[1.65rem] font-bold tracking-tight leading-none transition-colors ${
-                  isScrolledOrSubpage ? 'text-stone-900 dark:text-stone-100' : 'text-white'
+                className={`font-serif text-xl sm:text-2xl sm:text-[1.65rem] font-bold tracking-tight leading-none transition-colors ${
+                  isHeaderSolid ? 'text-stone-900 dark:text-stone-100' : 'text-white'
                 }`}
               >
                 BeyondPahar
               </span>
               <span
-                className={`text-[9px] sm:text-[9.5px] font-sans tracking-[0.25em] uppercase font-semibold mt-1.5 transition-colors ${
-                  isScrolledOrSubpage
+                className={`hidden sm:block text-[9px] sm:text-[9.5px] font-sans tracking-[0.25em] uppercase font-semibold mt-1.5 transition-colors ${
+                  isHeaderSolid
                     ? 'text-[#BA532B] dark:text-[#c65b32]'
                     : 'text-stone-300/85'
                 }`}
@@ -327,30 +345,32 @@ export function Navbar() {
           </nav>
 
           {/* 3. Action Icons & Plan Your Trip Button */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 whitespace-nowrap">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 whitespace-nowrap">
             {/* Minimal & Aesthetic Search Bar Trigger */}
             <button
+              type="button"
               onClick={() => setSearchDialogOpen(true)}
-              className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs transition-all cursor-pointer ${
-                isScrolledOrSubpage
+              className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs transition-all cursor-pointer group ${
+                isHeaderSolid
                   ? 'border-stone-200/90 dark:border-white/10 bg-stone-100/70 dark:bg-white/5 text-stone-600 dark:text-stone-300 hover:border-laterite/40 hover:bg-stone-100'
                   : 'border-white/20 bg-white/10 text-stone-200 hover:bg-white/15 hover:border-white/30'
               }`}
-              title="Search destinations (Ctrl+K)"
+              title="Search destinations"
               aria-label="Search destinations"
             >
               <Search className="w-3.5 h-3.5 opacity-70" />
               <span className="font-light text-[11px] tracking-wide">Search...</span>
-              <kbd className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black/10 dark:bg-white/10 border border-black/10 dark:border-white/10 opacity-70">
-                ⌘K
-              </kbd>
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 opacity-80 group-hover:translate-x-0.5 transition-transform duration-200">
+                <ArrowRight className="w-2.5 h-2.5 opacity-80" />
+              </span>
             </button>
 
             {/* Mobile Search Icon */}
             <button
+              type="button"
               onClick={() => setSearchDialogOpen(true)}
               className={`sm:hidden transition-colors p-2 rounded-full cursor-pointer ${
-                isScrolledOrSubpage
+                isHeaderSolid
                   ? 'text-stone-700 dark:text-stone-300 hover:text-[#BA532B] hover:bg-stone-200/50 dark:hover:bg-stone-800/60'
                   : 'text-stone-200 hover:text-white hover:bg-white/10'
               }`}
@@ -362,9 +382,10 @@ export function Navbar() {
 
             {/* Wishlist Heart Icon */}
             <button
+              type="button"
               onClick={() => setWishlistOpen(true)}
               className={`relative transition-colors p-2 rounded-full cursor-pointer ${
-                isScrolledOrSubpage
+                isHeaderSolid
                   ? 'text-stone-700 dark:text-stone-300 hover:text-[#BA532B] hover:bg-stone-200/50 dark:hover:bg-stone-800/60'
                   : 'text-stone-200 hover:text-white hover:bg-white/10'
               }`}
@@ -387,7 +408,7 @@ export function Navbar() {
             <Link
               to="/login"
               className={`transition-colors p-2 rounded-full hidden sm:inline-flex cursor-pointer ${
-                isScrolledOrSubpage
+                isHeaderSolid
                   ? 'text-stone-700 dark:text-stone-300 hover:text-[#BA532B] hover:bg-stone-200/50 dark:hover:bg-stone-800/60'
                   : 'text-stone-200 hover:text-white hover:bg-white/10'
               }`}
@@ -397,12 +418,12 @@ export function Navbar() {
               <User className="w-4 sm:w-[1.125rem] h-4 sm:h-[1.125rem]" />
             </Link>
 
-            {/* Rounded Plan Your Trip CTA */}
+            {/* Rounded Plan Your Trip CTA (hidden on mobile to ensure hamburger button stays visible) */}
             <a
               href={isHome ? '#plan-trip' : '/#plan-trip'}
               onClick={(e) => handleNavClick(e, 'plan-trip')}
               aria-label="Plan My Trip"
-              className="bg-[#BA532B] hover:bg-[#a64724] active:scale-95 text-white font-medium text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 shrink-0 whitespace-nowrap flex items-center gap-1.5 border border-white/10"
+              className="hidden md:inline-flex bg-[#BA532B] hover:bg-[#a64724] active:scale-95 text-white font-medium text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 shrink-0 whitespace-nowrap items-center gap-1.5 border border-white/10"
             >
               <span>Plan Your Trip</span>
               <ArrowRight className="w-3.5 h-3.5 ml-0.5 shrink-0" />
@@ -410,13 +431,15 @@ export function Navbar() {
 
             {/* Mobile Hamburger Menu Toggle */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`xl:hidden p-1.5 rounded-lg transition-colors cursor-pointer ${
-                isScrolledOrSubpage
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className={`xl:hidden p-2 rounded-xl transition-colors cursor-pointer flex items-center justify-center ${
+                isHeaderSolid
                   ? 'text-stone-800 dark:text-stone-200 hover:bg-stone-200/60 dark:hover:bg-stone-800'
                   : 'text-stone-200 hover:text-white hover:bg-white/10'
               }`}
-              aria-label="Toggle Menu"
+              aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Menu'}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -424,81 +447,94 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Slide-in Drawer */}
+      {/* Mobile Slide-in Drawer with Backdrop */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-[#FAF8F5]/98 dark:bg-stone-950/98 backdrop-blur-2xl border-t border-[#E8E2D9] dark:border-stone-800 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-2 duration-200 max-h-[85vh] overflow-y-auto">
-          {/* Quick Search */}
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              setSearchDialogOpen(true);
-            }}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 text-xs font-medium"
-          >
-            <span className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-[#BA532B]" />
-              <span>Search Purulia & Bankura...</span>
-            </span>
-            <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-stone-200 dark:bg-stone-800 rounded">⌘K</kbd>
-          </button>
+        <>
+          {/* Dimmed backdrop overlay */}
+          <div
+            className="fixed inset-0 top-[58px] sm:top-[68px] bg-black/50 backdrop-blur-xs xl:hidden z-40 transition-opacity duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
 
-          {/* District Highlights */}
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <Link
-              to="/purulia"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800 hover:border-[#BA532B]/50 transition-colors"
+          <div className="relative z-50 xl:hidden bg-[#FAF8F5]/98 dark:bg-stone-950/98 backdrop-blur-2xl border-t border-[#E8E2D9] dark:border-stone-800 px-5 sm:px-6 py-5 space-y-4 shadow-2xl max-h-[calc(100vh-70px)] overflow-y-auto">
+            {/* Quick Search */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setSearchDialogOpen(true);
+              }}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 text-xs font-medium group cursor-pointer"
             >
-              <Mountain className="w-4 h-4 text-[#BA532B] mb-1" />
-              <div className="text-xs font-bold text-stone-900 dark:text-white">Purulia</div>
-              <div className="text-[10px] text-stone-500 dark:text-stone-400">Ayodhya Hills</div>
-            </Link>
+              <span className="flex items-center gap-2">
+                <Search className="w-4 h-4 text-[#BA532B]" />
+                <span>Search Purulia & Bankura...</span>
+              </span>
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-stone-200/80 dark:bg-stone-800 text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform duration-200">
+                <ArrowRight className="w-3.5 h-3.5" />
+              </span>
+            </button>
 
-            <Link
-              to="/bankura"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 transition-colors"
-            >
-              <Landmark className="w-4 h-4 text-amber-500 mb-1" />
-              <div className="text-xs font-bold text-stone-900 dark:text-white">Bankura</div>
-              <div className="text-[10px] text-stone-500 dark:text-stone-400">Terracotta & Silk</div>
-            </Link>
-          </div>
+            {/* District Highlights */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <Link
+                to="/purulia"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800 hover:border-[#BA532B]/50 transition-colors"
+              >
+                <Mountain className="w-4 h-4 text-[#BA532B] mb-1" />
+                <div className="text-xs font-bold text-stone-900 dark:text-white">Purulia</div>
+                <div className="text-[10px] text-stone-500 dark:text-stone-400">Ayodhya Hills</div>
+              </Link>
 
-          {/* Navigation Links with Smooth Scrolling */}
-          <div className="flex flex-col space-y-1 pt-2 border-t border-stone-200 dark:border-stone-800 text-sm">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id;
-              return (
-                <a
-                  key={item.id}
-                  href={isHome ? `#${item.id}` : `/#${item.id}`}
-                  onClick={(e) => handleNavClick(e, item.id)}
-                  className={`py-2 px-3 rounded-xl font-medium transition-colors flex items-center justify-between ${
-                    isActive
-                      ? 'bg-[#BA532B]/10 text-[#BA532B] font-semibold'
-                      : 'text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-900'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {isActive && <span className="w-2 h-2 rounded-full bg-[#BA532B]" />}
-                </a>
-              );
-            })}
-          </div>
+              <Link
+                to="/bankura"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 transition-colors"
+              >
+                <Landmark className="w-4 h-4 text-amber-500 mb-1" />
+                <div className="text-xs font-bold text-stone-900 dark:text-white">Bankura</div>
+                <div className="text-[10px] text-stone-500 dark:text-stone-400">Terracotta & Silk</div>
+              </Link>
+            </div>
 
-          <div className="pt-3 border-t border-stone-200 dark:border-stone-800">
-            <a
-              href={isHome ? '#plan-trip' : '/#plan-trip'}
-              onClick={(e) => handleNavClick(e, 'plan-trip')}
-              aria-label="Plan My Trip"
-              className="w-full flex items-center justify-center gap-2 bg-[#BA532B] hover:bg-[#a64724] text-white py-3 rounded-full text-sm font-semibold shadow-lg shadow-[#BA532B]/20"
-            >
-              <CalendarCheck className="w-4 h-4" />
-              <span>Plan Your Trip</span>
-            </a>
+            {/* Navigation Links with Smooth Scrolling */}
+            <div className="flex flex-col space-y-1 pt-2 border-t border-stone-200 dark:border-stone-800 text-sm">
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={isHome ? `#${item.id}` : `/#${item.id}`}
+                    onClick={(e) => handleNavClick(e, item.id)}
+                    className={`py-2 px-3 rounded-xl font-medium transition-colors flex items-center justify-between cursor-pointer ${
+                      isActive
+                        ? 'bg-[#BA532B]/10 text-[#BA532B] font-semibold'
+                        : 'text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-900'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {isActive && <span className="w-2 h-2 rounded-full bg-[#BA532B]" />}
+                  </a>
+                );
+              })}
+            </div>
+
+            {/* Mobile Plan Your Trip CTA */}
+            <div className="pt-3 border-t border-stone-200 dark:border-stone-800">
+              <a
+                href={isHome ? '#plan-trip' : '/#plan-trip'}
+                onClick={(e) => handleNavClick(e, 'plan-trip')}
+                aria-label="Plan My Trip"
+                className="w-full flex items-center justify-center gap-2 bg-[#BA532B] hover:bg-[#a64724] text-white py-3 rounded-full text-sm font-semibold shadow-lg shadow-[#BA532B]/20"
+              >
+                <CalendarCheck className="w-4 h-4" />
+                <span>Plan Your Trip</span>
+              </a>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   );
