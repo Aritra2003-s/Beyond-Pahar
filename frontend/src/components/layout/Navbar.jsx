@@ -191,8 +191,8 @@ export function Navbar() {
           : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-white/10 py-4 sm:py-5'
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-3 sm:gap-6 w-full">
+      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-2.5 lg:gap-4 xl:gap-6 w-full">
           {/* 1. Brand Logo & Wordmark */}
           <a
             href={isHome ? '#home' : '/#home'}
@@ -200,17 +200,17 @@ export function Navbar() {
             className="flex items-center gap-2.5 sm:gap-3 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BA532B] rounded-xl select-none"
             aria-label="BeyondPahar Home"
           >
-            <BrandLogo size={38} className="sm:w-[42px] sm:h-[42px] group-hover:scale-105 transition-transform duration-300" />
+            <BrandLogo size={36} className="sm:w-10 sm:h-10 shrink-0 group-hover:scale-105 transition-transform duration-300" />
             <div className="flex flex-col">
               <span
-                className={`font-serif text-xl sm:text-2xl sm:text-[1.65rem] font-bold tracking-tight leading-none transition-colors ${
+                className={`font-serif text-lg sm:text-xl xl:text-[1.35rem] 2xl:text-[1.65rem] font-bold tracking-tight leading-none transition-colors ${
                   isHeaderSolid ? 'text-stone-900 dark:text-stone-100' : 'text-white'
                 }`}
               >
                 BeyondPahar
               </span>
               <span
-                className={`hidden sm:block text-[9px] sm:text-[9.5px] font-sans tracking-[0.25em] uppercase font-semibold mt-1.5 transition-colors ${
+                className={`hidden 2xl:block text-[8.5px] font-sans tracking-[0.22em] uppercase font-semibold mt-1 transition-colors ${
                   isHeaderSolid
                     ? 'text-[#BA532B] dark:text-[#c65b32]'
                     : 'text-stone-300/85'
@@ -223,7 +223,7 @@ export function Navbar() {
 
           {/* 2. Desktop Navigation Links (Smooth-Scrolling Semantic Anchors) */}
           <nav
-            className="hidden xl:flex items-center gap-5 2xl:gap-7 text-sm font-medium"
+            className="hidden xl:flex items-center gap-3.5 2xl:gap-6 text-xs xl:text-[13px] 2xl:text-sm font-medium"
             aria-label="Primary Navigation"
           >
             {/* Screen reader & test accessible direct links for Purulia and Bankura */}
@@ -345,12 +345,12 @@ export function Navbar() {
           </nav>
 
           {/* 3. Action Icons & Plan Your Trip Button */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 whitespace-nowrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 2xl:gap-3 shrink-0 whitespace-nowrap">
             {/* Minimal & Aesthetic Search Bar Trigger */}
             <button
               type="button"
               onClick={() => setSearchDialogOpen(true)}
-              className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs transition-all cursor-pointer group ${
+              className={`hidden sm:flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-3 py-1.5 rounded-full border text-xs transition-all cursor-pointer group ${
                 isHeaderSolid
                   ? 'border-stone-200/90 dark:border-white/10 bg-stone-100/70 dark:bg-white/5 text-stone-600 dark:text-stone-300 hover:border-laterite/40 hover:bg-stone-100'
                   : 'border-white/20 bg-white/10 text-stone-200 hover:bg-white/15 hover:border-white/30'
@@ -423,7 +423,7 @@ export function Navbar() {
               href={isHome ? '#plan-trip' : '/#plan-trip'}
               onClick={(e) => handleNavClick(e, 'plan-trip')}
               aria-label="Plan My Trip"
-              className="hidden md:inline-flex bg-[#BA532B] hover:bg-[#a64724] active:scale-95 text-white font-medium text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 shrink-0 whitespace-nowrap items-center gap-1.5 border border-white/10"
+              className="hidden md:inline-flex bg-[#BA532B] hover:bg-[#a64724] active:scale-95 text-white font-medium text-xs xl:text-xs 2xl:text-sm px-3.5 xl:px-4 2xl:px-5 py-2 2xl:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 shrink-0 whitespace-nowrap items-center gap-1.5 border border-white/10"
             >
               <span>Plan Your Trip</span>
               <ArrowRight className="w-3.5 h-3.5 ml-0.5 shrink-0" />
