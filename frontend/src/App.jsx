@@ -53,7 +53,7 @@ export function App() {
           <div className="min-h-screen flex flex-col bg-cream dark:bg-forest-deep text-charcoal dark:text-cream selection:bg-laterite selection:text-white">
             <Navbar />
 
-            <main className="flex-1">
+            <main className="flex-1 relative z-0">
               <Routes>
                 {/* 1. Home */}
                 <Route path="/" element={<HomePage />} />

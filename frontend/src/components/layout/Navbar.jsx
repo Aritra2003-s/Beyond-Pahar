@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Search,
@@ -130,7 +131,11 @@ export function Navbar() {
   // Click / touch outside to close dropdowns & mobile menu
   useEffect(() => {
     const handlePointerOutside = (e) => {
-      if (navRef.current && !navRef.current.contains(e.target)) {
+      const drawerEl = document.getElementById('mobile-nav-drawer');
+      const isInsideNav = navRef.current && navRef.current.contains(e.target);
+      const isInsideDrawer = drawerEl && drawerEl.contains(e.target);
+
+      if (!isInsideNav && !isInsideDrawer) {
         setActiveDropdown(null);
         setMobileMenuOpen(false);
       }
@@ -184,8 +189,8 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      style={{ zIndex: 1000, ...(isHeaderSolid ? { backgroundColor: '#FAF8F5' } : {}) }}
-      className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
+      style={{ zIndex: 100000, ...(isHeaderSolid ? { backgroundColor: '#FAF8F5' } : {}) }}
+      className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ease-in-out ${
         isHeaderSolid
           ? 'bg-[#FAF8F5] dark:!bg-[#121A16] backdrop-blur-md border-b border-[#E8E2D9] dark:border-stone-800 shadow-sm shadow-stone-900/5 py-3'
           : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-white/10 py-4 sm:py-5'
@@ -448,10 +453,11 @@ export function Navbar() {
       </div>
 
       {/* Mobile Modern Minimalist Full-Screen Drawer */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && typeof document !== 'undefined' && createPortal(
         <div
+          id="mobile-nav-drawer"
           style={{ backgroundColor: '#FAF8F5' }}
-          className="fixed inset-x-0 top-[56px] sm:top-[64px] bottom-0 dark:!bg-[#121A16] z-50 xl:hidden overflow-y-auto border-t border-stone-200/90 dark:border-stone-800 flex flex-col justify-between px-5 py-6 sm:px-8 transition-all"
+          className="fixed inset-x-0 top-[56px] sm:top-[64px] bottom-0 dark:!bg-[#121A16] z-[99999] xl:hidden overflow-y-auto border-t border-stone-200/90 dark:border-stone-800 flex flex-col justify-between px-5 py-6 sm:px-8 transition-all"
         >
           <div className="space-y-5">
             {/* Minimalist Search Bar Trigger */}
@@ -569,7 +575,8 @@ export function Navbar() {
               <span className="font-serif italic text-[11px] opacity-80">Beyond the hills. Into the wild.</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );
