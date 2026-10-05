@@ -184,10 +184,10 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 1000, ...(isHeaderSolid ? { backgroundColor: '#FAF8F5' } : {}) }}
       className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ease-in-out ${
         isHeaderSolid
-          ? 'bg-[#FAF8F5]/98 dark:bg-stone-950/98 backdrop-blur-md border-b border-[#E8E2D9] dark:border-stone-800 shadow-sm shadow-stone-900/5 py-3'
+          ? 'bg-[#FAF8F5] dark:!bg-[#121A16] backdrop-blur-md border-b border-[#E8E2D9] dark:border-stone-800 shadow-sm shadow-stone-900/5 py-3'
           : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-white/10 py-4 sm:py-5'
       }`}
     >
@@ -447,94 +447,129 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Slide-in Drawer with Backdrop */}
+      {/* Mobile Modern Minimalist Full-Screen Drawer */}
       {mobileMenuOpen && (
-        <>
-          {/* Dimmed backdrop overlay */}
-          <div
-            className="fixed inset-0 top-[58px] sm:top-[68px] bg-black/50 backdrop-blur-xs xl:hidden z-40 transition-opacity duration-200"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-hidden="true"
-          />
-
-          <div className="relative z-50 xl:hidden bg-[#FAF8F5]/98 dark:bg-stone-950/98 backdrop-blur-2xl border-t border-[#E8E2D9] dark:border-stone-800 px-5 sm:px-6 py-5 space-y-4 shadow-2xl max-h-[calc(100vh-70px)] overflow-y-auto">
-            {/* Quick Search */}
+        <div
+          style={{ backgroundColor: '#FAF8F5' }}
+          className="fixed inset-x-0 top-[56px] sm:top-[64px] bottom-0 dark:!bg-[#121A16] z-50 xl:hidden overflow-y-auto border-t border-stone-200/90 dark:border-stone-800 flex flex-col justify-between px-5 py-6 sm:px-8 transition-all"
+        >
+          <div className="space-y-5">
+            {/* Minimalist Search Bar Trigger */}
             <button
               type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 setSearchDialogOpen(true);
               }}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 text-xs font-medium group cursor-pointer"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200/90 dark:border-stone-800 text-stone-700 dark:text-stone-300 text-xs shadow-xs hover:border-[#BA532B]/50 transition-all cursor-pointer"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2.5">
                 <Search className="w-4 h-4 text-[#BA532B]" />
-                <span>Search Purulia & Bankura...</span>
+                <span className="font-light tracking-wide text-stone-600 dark:text-stone-300">
+                  Search Purulia & Bankura...
+                </span>
               </span>
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-stone-200/80 dark:bg-stone-800 text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform duration-200">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400">
                 <ArrowRight className="w-3.5 h-3.5" />
               </span>
             </button>
 
-            {/* District Highlights */}
-            <div className="grid grid-cols-2 gap-3 pt-1">
+            {/* Quick District Badges */}
+            <div className="grid grid-cols-2 gap-2.5">
               <Link
                 to="/purulia"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-3 rounded-xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800 hover:border-[#BA532B]/50 transition-colors"
+                className="flex items-center gap-2.5 p-3 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200/90 dark:border-stone-800 hover:border-[#BA532B]/50 transition-all shadow-xs"
               >
-                <Mountain className="w-4 h-4 text-[#BA532B] mb-1" />
-                <div className="text-xs font-bold text-stone-900 dark:text-white">Purulia</div>
-                <div className="text-[10px] text-stone-500 dark:text-stone-400">Ayodhya Hills</div>
+                <div className="w-8 h-8 rounded-xl bg-[#BA532B]/10 flex items-center justify-center text-[#BA532B] shrink-0">
+                  <Mountain className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-stone-900 dark:text-white">Purulia</div>
+                  <div className="text-[10px] text-stone-500 dark:text-stone-400">Ayodhya Hills</div>
+                </div>
               </Link>
 
               <Link
                 to="/bankura"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-3 rounded-xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 transition-colors"
+                className="flex items-center gap-2.5 p-3 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200/90 dark:border-stone-800 hover:border-amber-500/50 transition-all shadow-xs"
               >
-                <Landmark className="w-4 h-4 text-amber-500 mb-1" />
-                <div className="text-xs font-bold text-stone-900 dark:text-white">Bankura</div>
-                <div className="text-[10px] text-stone-500 dark:text-stone-400">Terracotta & Silk</div>
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                  <Landmark className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-stone-900 dark:text-white">Bankura</div>
+                  <div className="text-[10px] text-stone-500 dark:text-stone-400">Terracotta & Silk</div>
+                </div>
               </Link>
             </div>
 
-            {/* Navigation Links with Smooth Scrolling */}
-            <div className="flex flex-col space-y-1 pt-2 border-t border-stone-200 dark:border-stone-800 text-sm">
-              {navItems.map((item) => {
+            {/* Modern Minimalist Nav Links */}
+            <nav className="flex flex-col divide-y divide-stone-200/60 dark:divide-stone-800/70 pt-1" aria-label="Mobile Navigation">
+              {navItems.map((item, idx) => {
                 const isActive = activeSection === item.id;
                 return (
                   <a
                     key={item.id}
                     href={isHome ? `#${item.id}` : `/#${item.id}`}
                     onClick={(e) => handleNavClick(e, item.id)}
-                    className={`py-2 px-3 rounded-xl font-medium transition-colors flex items-center justify-between cursor-pointer ${
-                      isActive
-                        ? 'bg-[#BA532B]/10 text-[#BA532B] font-semibold'
-                        : 'text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-900'
-                    }`}
+                    className="py-3 px-1 flex items-center justify-between text-base sm:text-lg font-medium tracking-tight transition-colors cursor-pointer group"
                   >
-                    <span>{item.label}</span>
-                    {isActive && <span className="w-2 h-2 rounded-full bg-[#BA532B]" />}
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-mono text-stone-400 dark:text-stone-500 group-hover:text-[#BA532B] transition-colors">
+                        0{idx + 1}
+                      </span>
+                      <span
+                        className={`${
+                          isActive
+                            ? 'text-[#BA532B] font-semibold'
+                            : 'text-stone-900 dark:text-stone-100 group-hover:text-[#BA532B] dark:group-hover:text-[#BA532B]'
+                        } transition-colors`}
+                      >
+                        {item.label}
+                      </span>
+                    </div>
+
+                    <ArrowRight
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isActive
+                          ? 'text-[#BA532B] translate-x-1'
+                          : 'text-stone-400 dark:text-stone-500 group-hover:text-[#BA532B] group-hover:translate-x-1'
+                      }`}
+                    />
                   </a>
                 );
               })}
-            </div>
+            </nav>
+          </div>
 
-            {/* Mobile Plan Your Trip CTA */}
-            <div className="pt-3 border-t border-stone-200 dark:border-stone-800">
-              <a
-                href={isHome ? '#plan-trip' : '/#plan-trip'}
-                onClick={(e) => handleNavClick(e, 'plan-trip')}
-                aria-label="Plan My Trip"
-                className="w-full flex items-center justify-center gap-2 bg-[#BA532B] hover:bg-[#a64724] text-white py-3 rounded-full text-sm font-semibold shadow-lg shadow-[#BA532B]/20"
+          {/* Bottom Actions & Plan Trip CTA */}
+          <div className="pt-5 pb-2 space-y-3">
+            <a
+              href={isHome ? '#plan-trip' : '/#plan-trip'}
+              onClick={(e) => handleNavClick(e, 'plan-trip')}
+              aria-label="Plan My Trip"
+              className="w-full flex items-center justify-center gap-2 bg-[#BA532B] hover:bg-[#a64724] active:scale-[0.98] text-white py-3.5 rounded-full text-sm font-semibold shadow-lg shadow-[#BA532B]/20 transition-all cursor-pointer"
+            >
+              <CalendarCheck className="w-4 h-4" />
+              <span>Plan Your Trip</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+            </a>
+
+            <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 pt-2 border-t border-stone-200/60 dark:border-stone-800">
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#BA532B] transition-colors flex items-center gap-1.5 font-medium"
               >
-                <CalendarCheck className="w-4 h-4" />
-                <span>Plan Your Trip</span>
-              </a>
+                <User className="w-3.5 h-3.5" />
+                <span>Sign In / Account</span>
+              </Link>
+              <span className="font-serif italic text-[11px] opacity-80">Beyond the hills. Into the wild.</span>
             </div>
           </div>
-        </>
+        </div>
       )}
     </header>
   );
